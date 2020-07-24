@@ -19,7 +19,7 @@ searchForm.addEventListener('submit', e => {
   searchObj = e.currentTarget.elements.searFormName.value;
   e.currentTarget.reset();
   loadBtn.classList.add('hidden');
-  pageNum = 1;
+  // pageNum = 1;
   axiosImages(searchObj, pageNum).then(response => {
     if (response.data.hits.length === 0) {
       return PNotify.error({
@@ -33,16 +33,17 @@ searchForm.addEventListener('submit', e => {
   });
 });
 
-loadBtn.addEventListener('click', () => {
+function loadBtnScroll() {
   axiosImages(searchObj, pageNum).then(response => {
     loadMoreMarkUp(response);
-    pageNum += 1;
-    window.scrollTo({
-      top: frame.contentWindow.pageXOffset,
-      behavior: 'smooth',
-    });
+    // window.scrollTo({
+    //   top: document.documentElement.offsetHeight,
+    //   behavior: 'smooth',
+    // });
   });
-});
+}
+
+loadBtn.addEventListener('click', loadBtnScroll);
 
 function markupImg(response) {
   const markup = imageTemplate(response.data.hits);
@@ -54,7 +55,7 @@ function loadMoreMarkUp(response) {
   gallery.insertAdjacentHTML('beforeend', markup);
 }
 
-function axiosImages(searchObj, pageNum = 1) {
+function axiosImages(searchObj, pageNum) {
   if (searchObj !== '') {
     return axios.get(
       `https://pixabay.com/api/?image_type=photo&orientation=horizontal&q=${searchObj}&page=${pageNum}&per_page=12&key=${apiKey}`,
